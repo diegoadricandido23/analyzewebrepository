@@ -1,0 +1,5 @@
+br/com/diego/checkwebrepository/enums/TipoDadoEnum.class
+br/com/diego/checkwebrepository/ChekWebRepositoryApplication.class
+br/com/diego/checkwebrepository/service/CheckWebPageService.class
+br/com/diego/checkwebrepository/config/RestTemplateConfig.class
+br/com/diego/checkwebrepository/controller/CheckWebPageController.class
