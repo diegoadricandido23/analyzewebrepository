@@ -1,5 +1,13 @@
-br/com/diego/checkwebrepository/enums/TipoDadoEnum.class
-br/com/diego/checkwebrepository/ChekWebRepositoryApplication.class
-br/com/diego/checkwebrepository/service/CheckWebPageService.class
+br/com/diego/checkwebrepository/exceptions/ApiErrorHandler.class
+br/com/diego/checkwebrepository/exceptions/CheckPageCustomException.class
+br/com/diego/checkwebrepository/service/CheckWebPageCustomService.class
 br/com/diego/checkwebrepository/config/RestTemplateConfig.class
+br/com/diego/checkwebrepository/service/CheckWebPageService.class
+br/com/diego/checkwebrepository/config/ModelMapperConfig.class
+br/com/diego/checkwebrepository/enums/TypoSearchEnum.class
+br/com/diego/checkwebrepository/model/FilesInformation.class
+br/com/diego/checkwebrepository/enums/ExtensionFileEnum.class
 br/com/diego/checkwebrepository/controller/CheckWebPageController.class
+br/com/diego/checkwebrepository/ChekWebRepositoryApplication.class
+br/com/diego/checkwebrepository/response/FilesInformationResponse.class
+br/com/diego/checkwebrepository/exceptions/ErrorResponse.class

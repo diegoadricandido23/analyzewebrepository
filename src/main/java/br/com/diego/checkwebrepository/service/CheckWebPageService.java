@@ -1,21 +1,20 @@
 package br.com.diego.checkwebrepository.service;
 
-import java.io.IOException;
-import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.atomic.AtomicReference;
-
-import br.com.diego.checkwebrepository.enums.TipoDadoEnum;
-import br.com.diego.checkwebrepository.response.DadosColetados;
+import br.com.diego.checkwebrepository.enums.ExtensionFileEnum;
+import br.com.diego.checkwebrepository.response.FilesInformationResponse;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.PostConstruct;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 public class CheckWebPageService {
@@ -24,23 +23,20 @@ public class CheckWebPageService {
     private static final String LINK_INFO = "js-navigation-open Link--primary";
     private static final String CODE_INFO = "text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1";
 
-    @Autowired
-    private RestTemplate restTemplate;
-
     private List<String> directoryList = new ArrayList<>();
     private List<String> auxDirectory = new ArrayList<>();
     private HashMap<String, List<String>> dados = new HashMap<>();
-    private List<DadosColetados> dadosColetadosList = new ArrayList<>();
+    private List<FilesInformationResponse> filesInformationResponseList = new ArrayList<>();
 
     @PostConstruct
     public void init() {
-        for (TipoDadoEnum tipoDadoEnum : TipoDadoEnum.values()) {
-            dados.put(tipoDadoEnum.name(), new ArrayList<>());
+        for (ExtensionFileEnum extensionFileEnum : ExtensionFileEnum.values()) {
+            dados.put(extensionFileEnum.name(), new ArrayList<>());
         }
 
     }
 
-    public List<DadosColetados> checkPage(final String user, final String repository) {
+    public List<FilesInformationResponse> checkPage(final String user, final String repository) {
         try {
             checarPageInicial(user.concat("/").concat(repository));
             popularArquivos(user.concat("/").concat(repository));
@@ -64,7 +60,7 @@ public class CheckWebPageService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return dadosColetadosList;
+        return filesInformationResponseList;
     }
 
     private void checarPageInicial(final String pathInicial) throws IOException {
@@ -115,18 +111,18 @@ public class CheckWebPageService {
         doc.getElementsByClass(LINK_INFO).forEach(x -> {
             String href = x.attr("href");
             if (href.contains(".")) {
-                if (href.contains(TipoDadoEnum.XML.getTipo())) {
-                    dados.get(TipoDadoEnum.XML.name()).add(href);
-                } else if (href.contains(TipoDadoEnum.GIT.getTipo())) {
-                    dados.get(TipoDadoEnum.GIT.name()).add(href);
-                } else if (href.contains(TipoDadoEnum.JSON.getTipo())) {
-                    dados.get(TipoDadoEnum.JSON.name()).add(href);
-                } else if (href.contains(TipoDadoEnum.MARKDOWN.getTipo())) {
-                    dados.get(TipoDadoEnum.MARKDOWN.name()).add(href);
-                } else if (href.contains(TipoDadoEnum.JAVA.getTipo())) {
-                    dados.get(TipoDadoEnum.JAVA.name()).add(href);
-                } else if (href.contains(TipoDadoEnum.PROPERTIES.getTipo())) {
-                    dados.get(TipoDadoEnum.PROPERTIES.name()).add(href);
+                if (href.contains(ExtensionFileEnum.XML.getType())) {
+                    dados.get(ExtensionFileEnum.XML.name()).add(href);
+                } else if (href.contains(ExtensionFileEnum.GIT.getType())) {
+                    dados.get(ExtensionFileEnum.GIT.name()).add(href);
+                } else if (href.contains(ExtensionFileEnum.JSON.getType())) {
+                    dados.get(ExtensionFileEnum.JSON.name()).add(href);
+                } else if (href.contains(ExtensionFileEnum.MARKDOWN.getType())) {
+                    dados.get(ExtensionFileEnum.MARKDOWN.name()).add(href);
+                } else if (href.contains(ExtensionFileEnum.JAVA.getType())) {
+                    dados.get(ExtensionFileEnum.JAVA.name()).add(href);
+                } else if (href.contains(ExtensionFileEnum.PROPERTIES.getType())) {
+                    dados.get(ExtensionFileEnum.PROPERTIES.name()).add(href);
                 }
             }
         });
@@ -146,7 +142,6 @@ public class CheckWebPageService {
                 try {
                     final Document doc = carregarDocumento(cod);
                     doc.getElementsByClass(CODE_INFO).forEach(x -> {
-                        System.out.println(x.text());
                         String valor = x.text().toLowerCase();
                         String linha = valor.substring(0, valor.lastIndexOf("lines")).trim();
 
@@ -169,15 +164,15 @@ public class CheckWebPageService {
                 }
             });
             if(totalLinhas.get() > 0) {
-                DadosColetados dc = new DadosColetados();
-                dc.setExtensao(tipoDado);
-                dc.setContagem(dados.get(tipoDado).size());
-                dc.setLinhas(totalLinhas.get());
+                FilesInformationResponse dc = new FilesInformationResponse();
+                dc.setExtension(tipoDado);
+                dc.setCount(dados.get(tipoDado).size());
+                dc.setLines(totalLinhas.get());
                 dc.setBytes(totalBytes.get());
 
                 totalLinhas.set(0);
                 totalBytes.set(0.0);
-                dadosColetadosList.add(dc);
+                filesInformationResponseList.add(dc);
             }
         });
     }

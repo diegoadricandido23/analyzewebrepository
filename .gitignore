@@ -1,0 +1,62 @@
+# Eclipse
+.project
+.metadata
+.classpath
+.settings
+.externalToolBuilders
+#bin/ -> conflito bin de cartão em testes e java
+.externalToolBuilders
+
+#VSCODE
+/.vscode
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+*.code-workspace
+
+# IntelliJ
+/.idea
+target/
+*.iml
+*.iws
+*.class
+
+# Windows
+Desktop.ini
+Thumbs.db
+
+# MAC
+.DS_Store
+._*
+.Trashes
+
+# Linux
+*~
+*.swp
+
+# Temp files
+*.log
+*.crf
+*.drf
+*.krf
+*.if
+*.lk
+*.lock
+transaction_id
+logs/
+#log/ -> conflito tela log do site
+dependency-reduced-pom.xml
+
+# Tests
+integration/batch/data
+loader/registry-batch-loader/data
+
+# Pipeline
+*.versionsBackup
+
+/RemoteSystemsTempFiles/
+
+.factorypath
+.attach_pid*

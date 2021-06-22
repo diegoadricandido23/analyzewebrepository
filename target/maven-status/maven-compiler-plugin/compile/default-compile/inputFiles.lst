@@ -1,5 +1,13 @@
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/config/ModelMapperConfig.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/response/FilesInformationResponse.java
 /home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/service/CheckWebPageService.java
-/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/config/RestTemplateConfig.java
-/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/enums/TipoDadoEnum.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/enums/ExtensionFileEnum.java
 /home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/controller/CheckWebPageController.java
 /home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/ChekWebRepositoryApplication.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/exceptions/ApiErrorHandler.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/exceptions/CheckPageCustomException.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/service/CheckWebPageCustomService.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/exceptions/ErrorResponse.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/config/RestTemplateConfig.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/model/FilesInformation.java
+/home/dcandido/Documentos/Estudo/Java/analyzewebrepository/src/main/java/br/com/diego/checkwebrepository/enums/TypoSearchEnum.java
