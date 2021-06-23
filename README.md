@@ -7,7 +7,7 @@ analyzing and returning information about the types of data found.</p>
 
 ###EndPoints:
 
-Check repository 'GET': /check/{user}/{repository}
+Check repository 'GET': https://analyzewebrepository.herokuapp.com/check/{user}/{repository}
 * Returns a resume about files information </br>
     `
     [`</br>`
@@ -47,6 +47,7 @@ Check repository 'GET': /check/{user}/{repository}
 ### Heroku information
 
 <p>You can test application using information below:</p>
+* https://analyzewebrepository.herokuapp.com/check/{user}/{repository} <br/>
 
 ### DockerHub information
 
