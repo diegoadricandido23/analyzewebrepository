@@ -7,7 +7,10 @@ analyzing and returning information about the types of data found.</p>
 
 ###EndPoints:
 
-Check repository 'GET': https://analyzewebrepository.herokuapp.com/check/{user}/{repository}
+For to run local application, can use this command:<br/>
+* mvn spring-boot:run
+
+Check repository 'GET': localhost:8080/check/{user}/{repository}
 * Returns a resume about files information </br>
     `
     [`</br>`
@@ -52,3 +55,5 @@ Check repository 'GET': https://analyzewebrepository.herokuapp.com/check/{user}/
 ### DockerHub information
 
 <p>You can get and using application with information below:</p>
+* Repository > https://hub.docker.com/r/diegoadricandido23/analyzewebrepository
+* Command: docker pull diegoadricandido23/analyzewebrepository
