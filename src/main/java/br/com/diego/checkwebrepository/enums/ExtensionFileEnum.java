@@ -6,8 +6,8 @@ package br.com.diego.checkwebrepository.enums;
  */
 public enum ExtensionFileEnum {
     XML(".xml"),
-    JSON(".git"),
-    GIT(".json"),
+    GITIGNORE(".gitignore"),
+    JSON(".json"),
     MARKDOWN(".md"),
     JAVA(".java"),
     PROPERTIES(".properties"),

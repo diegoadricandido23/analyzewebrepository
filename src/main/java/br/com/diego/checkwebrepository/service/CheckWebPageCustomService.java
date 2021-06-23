@@ -1,12 +1,13 @@
 package br.com.diego.checkwebrepository.service;
 
 import br.com.diego.checkwebrepository.enums.ExtensionFileEnum;
-import br.com.diego.checkwebrepository.enums.TypoSearchEnum;
+import br.com.diego.checkwebrepository.enums.TypeSearchEnum;
 import br.com.diego.checkwebrepository.exceptions.CheckPageCustomException;
 import br.com.diego.checkwebrepository.model.FilesInformation;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -25,7 +26,7 @@ import java.util.concurrent.atomic.AtomicReference;
 public class CheckWebPageCustomService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CheckWebPageCustomService.class);
-    private static final String URL_BASE = "https://github.com/";
+    private static final String URL_BASE = "https://github.com";
     private static final String LINK_INFO = "js-navigation-open Link--primary";
     private static final String CODE_INFO = "text-mono f6 flex-auto pr-3 flex-order-2 flex-md-order-1";
     private static final String H_REF = "href=";
@@ -47,70 +48,71 @@ public class CheckWebPageCustomService {
     }
 
     /**
-     * Start process list.
+     * Start process to analise Page.
      *
      * @param user
-     *         the user
+     *         the user {@link String}
      * @param repository
-     *         the repository
-     * @return the list
+     *         the repository {@link String}
+     * @return the list {@link List<FilesInformation>}
      */
+    @Cacheable(cacheNames = "resource", key = "#user + #repository")
     public List<FilesInformation> startProcess(final String user, final String repository) {
-        try {
-            checkInitialPage(user.concat("/").concat(repository));
-            extractInfoPage(user.concat("/").concat(repository), TypoSearchEnum.ALL);
+        final String path = "/".concat(user).concat("/").concat(repository);
+        clear();
+        checkInitialPage(path);
+        extractInfoPage(path, TypeSearchEnum.ALL);
 
-            var sizeList = 0;
-            do {
-                sizeList = directoryList.size();
-                checkDirectory();
-                auxDirectory.forEach(dir -> {
-                    if (!directoryList.contains(dir)) {
-                        directoryList.add(dir);
-                    }
-                });
-                auxDirectory.clear();
-            } while (sizeList < directoryList.size());
+        var sizeList = 0;
+        do {
+            sizeList = directoryList.size();
+            checkDirectory();
+            auxDirectory.forEach(dir -> {
+                if (!directoryList.contains(dir)) {
+                    directoryList.add(dir);
+                }
+            });
+            auxDirectory.clear();
+        } while (sizeList < directoryList.size());
 
-            checkFiles();
-            checkCodes();
-        } catch (Exception e) {
-            LOGGER.error(e.getMessage());
-        }
+        checkFiles();
+        checkCodes();
+
         return filesInformationResponseList;
     }
 
     /**
-     *
-     * @param pathInitial
+     * Start checking the initial Page
+     * @param pathInitial {@link String}
      */
     private void checkInitialPage(final String pathInitial) {
         LOGGER.debug("CHECKING INITIAL PAGE");
-        extractInfoPage(pathInitial, TypoSearchEnum.DIRECTORIES);
+        extractInfoPage(pathInitial, TypeSearchEnum.DIRECTORIES);
     }
 
     /**
-     *
+     * Start process to check a Directory
      */
     private void checkDirectory(){
         LOGGER.debug("CHECKING NEW DIRECTORIES");
-        directoryList.forEach(directory -> extractInfoPage(directory, TypoSearchEnum.DIRECTORIES));
+        directoryList.forEach(directory -> extractInfoPage(directory, TypeSearchEnum.DIRECTORIES));
     }
 
     /**
-     *
+     * Start process to check a Files
      */
     private void checkFiles(){
         LOGGER.debug("CHECKING NEW FILES");
-        directoryList.forEach(directory -> extractInfoPage(directory, TypoSearchEnum.FILES));
+        directoryList.forEach(directory -> extractInfoPage(directory, TypeSearchEnum.FILES));
     }
 
     /**
+     *  Start process to extract info of pages
      *
-     * @param path
-     * @param typoSearchEnum
+     * @param path {@link String}
+     * @param typeSearchEnum {@link TypeSearchEnum}
      */
-    private void extractInfoPage(final String path, final TypoSearchEnum typoSearchEnum) {
+    private void extractInfoPage(final String path, final TypeSearchEnum typeSearchEnum) {
         var item = new StringBuilder();
         var itemAux = new StringBuilder();
         var page = searchPage(path);
@@ -134,14 +136,14 @@ public class CheckWebPageCustomService {
                             }
                         }
 
-                        if(typoSearchEnum == TypoSearchEnum.ALL) {
+                        if(typeSearchEnum == TypeSearchEnum.ALL) {
                             extractDirectories(itemAux);
                             extractFiles(itemAux);
 
-                        } else if(typoSearchEnum == TypoSearchEnum.DIRECTORIES) {
+                        } else if(typeSearchEnum == TypeSearchEnum.DIRECTORIES) {
                             extractDirectories(itemAux);
 
-                        } else if (typoSearchEnum == TypoSearchEnum.FILES) {
+                        } else if (typeSearchEnum == TypeSearchEnum.FILES) {
                             extractFiles(itemAux);
 
                         }
@@ -160,6 +162,7 @@ public class CheckWebPageCustomService {
     }
 
     /**
+     * Start process to check a Codes Page
      *
      */
     private void checkCodes() {
@@ -256,21 +259,24 @@ public class CheckWebPageCustomService {
     }
 
     /**
+     * The method search a page informed if dont't found
+     * generate an Exception {@link CheckPageCustomException}
      *
-     * @param path
-     * @return
+     * @param path {@link String}
+     * @return {@link String}
      */
     private String searchPage(final String path) {
-        var page = restTemplate.getForObject(URL_BASE.concat(path), String.class);
-        if(page == null) {
+        try {
+            return restTemplate.getForObject(URL_BASE.concat(path), String.class);
+
+        } catch (Exception e) {
             throw new CheckPageCustomException("PAGE NOT FOUND - " + URL_BASE.concat(path));
         }
-        return page;
     }
 
     /**
-     *
-     * @param itemAux
+     * The method extract new Directories
+     * @param itemAux {@link StringBuilder}
      */
     private void extractDirectories(final StringBuilder itemAux) {
         if (!itemAux.toString().contains(".")) {
@@ -283,15 +289,16 @@ public class CheckWebPageCustomService {
     }
 
     /**
+     * The method to do a split for type extension archives
      *
-     * @param itemAux
+     * @param itemAux {@link StringBuilder}
      */
     private void extractFiles(final StringBuilder itemAux) {
         if (itemAux.toString().contains(".")) {
             if (itemAux.toString().contains(ExtensionFileEnum.XML.getType())) {
                 mapWithInformation.get(ExtensionFileEnum.XML.name()).add(itemAux.toString());
-            } else if (itemAux.toString().contains(ExtensionFileEnum.GIT.getType())) {
-                mapWithInformation.get(ExtensionFileEnum.GIT.name()).add(itemAux.toString());
+            } else if (itemAux.toString().contains(ExtensionFileEnum.GITIGNORE.getType())) {
+                mapWithInformation.get(ExtensionFileEnum.GITIGNORE.name()).add(itemAux.toString());
             } else if (itemAux.toString().contains(ExtensionFileEnum.JSON.getType())) {
                 mapWithInformation.get(ExtensionFileEnum.JSON.name()).add(itemAux.toString());
             } else if (itemAux.toString().contains(ExtensionFileEnum.MARKDOWN.getType())) {
@@ -314,5 +321,11 @@ public class CheckWebPageCustomService {
                 mapWithInformation.get(ExtensionFileEnum.SQL.name()).add(itemAux.toString());
             }
         }
+    }
+
+    private void clear() {
+        directoryList.clear();
+        auxDirectory.clear();
+        filesInformationResponseList.clear();
     }
 }

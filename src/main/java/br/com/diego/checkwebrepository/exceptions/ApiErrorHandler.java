@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
 import javax.servlet.http.HttpServletRequest;
@@ -35,6 +36,12 @@ public class ApiErrorHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(value = { CheckPageCustomException.class})
     public ResponseEntity<?> handleCheckPageCustomException(CheckPageCustomException ex) {
+        LOGGER.warn(ex.getMessage());
+        return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
+    }
+
+    @ExceptionHandler(value = { HttpClientErrorException.class})
+    public ResponseEntity<?> handleHttpClientErrorException(HttpClientErrorException ex) {
         LOGGER.warn(ex.getMessage());
         return new ResponseEntity<>(new ErrorResponse(ex.getMessage()), HttpStatus.NOT_FOUND);
     }

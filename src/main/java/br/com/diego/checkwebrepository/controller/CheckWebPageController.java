@@ -3,8 +3,9 @@ package br.com.diego.checkwebrepository.controller;
 import br.com.diego.checkwebrepository.model.FilesInformation;
 import br.com.diego.checkwebrepository.response.FilesInformationResponse;
 import br.com.diego.checkwebrepository.service.CheckWebPageCustomService;
-import br.com.diego.checkwebrepository.service.CheckWebPageService;
 import org.modelmapper.ModelMapper;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -23,8 +24,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/check")
 public class CheckWebPageController {
 
-    @Autowired
-    private CheckWebPageService checkWebService;
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckWebPageController.class);
 
     @Autowired
     private CheckWebPageCustomService checkWebPageCustomService;
@@ -33,29 +33,20 @@ public class CheckWebPageController {
     private ModelMapper modelMapper;
 
     /**
-     * Checa repositorio response entity.
+     * Check informed repository.
      *
      * @param user the user
      * @param repository the repository
      * @return the response entity
      */
     @GetMapping("/{user}/{repository}")
-    public ResponseEntity<List<FilesInformationResponse>> checaRepositorio(@PathVariable String user, @PathVariable String repository) {
-        final List<FilesInformationResponse> dadosColetados = checkWebService.checkPage(user, repository);
-        return ResponseEntity.ok(dadosColetados);
-    }
+    public ResponseEntity<List<FilesInformationResponse>> checkRepository(@PathVariable String user, @PathVariable String repository) {
 
-    /**
-     * Checa repositorio v 1 response entity.
-     *
-     * @param user the user
-     * @param repository the repository
-     * @return the response entity
-     */
-    @GetMapping("/v1/{user}/{repository}")
-    public ResponseEntity<List<FilesInformationResponse>> checaRepositorioV1(@PathVariable String user, @PathVariable String repository) {
-        final List<FilesInformation> filesInformations = checkWebPageCustomService.startProcess(user, repository);
-        return ResponseEntity.ok(filesInformations.stream().map(this::modelToResponse).collect(Collectors.toList()));
+        LOGGER.info("INITIAL PROCESS");
+        final List<FilesInformation> filesInformation = checkWebPageCustomService.startProcess(user, repository);
+
+        LOGGER.info("FINALLY PROCESS");
+        return ResponseEntity.ok(filesInformation.stream().map(this::modelToResponse).collect(Collectors.toList()));
     }
 
     /**

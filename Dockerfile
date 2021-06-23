@@ -1,6 +1,8 @@
 FROM vvcelparti01:443/alpine:3.12.0
 
-COPY analyzewebrepository/target/analyzewebrepository.jar /tmp/analyzewebrepository.jar
+LABEL maintainer="Diego Adriano Pereira Candido"
+
+COPY analyzewebrepository/target/analyzewebrepository-*.jar /tmp/analyzewebrepository.jar
 
 RUN chown -vR 1002:1002 /tmp/analyzewebrepository.jar
 
