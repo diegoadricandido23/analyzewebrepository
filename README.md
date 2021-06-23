@@ -55,5 +55,5 @@ Check repository 'GET': localhost:8080/check/{user}/{repository}
 ### DockerHub information
 
 <p>You can get and using application with information below:</p>
-* Repository > https://hub.docker.com/r/diegoadricandido23/analyzewebrepository
+* Repository > https://hub.docker.com/r/diegoadricandido23/analyzewebrepository</br>
 * Command: docker pull diegoadricandido23/analyzewebrepository
